@@ -36,8 +36,10 @@ is7 = (== 3) . length
 is8 :: DigitWires -> Bool
 is8 = (== 7) . length
 
-isSuperset :: Ord a => Set.Set a -> Set.Set a -> Bool
-superset `isSuperset` set = all (\e -> Set.member e superset) set
+isStrictSuperset :: Ord a => Set.Set a -> Set.Set a -> Bool
+superset `isStrictSuperset` set =
+  set /= superset
+  && all (\e -> e `Set.member` superset) set
 
 --
 -- Examples
@@ -68,11 +70,11 @@ segmentMapFromInputs inputs =
       four = fromJust $ find is4 inputs
       seven = fromJust $ find is7 inputs
       eight = fromJust $ find is8 inputs
-      nine = fromJust $ find (\ds -> (length ds == 6) && (ds `isSuperset` four)) inputs
-      six = fromJust $ find (\ds -> (length ds == 6) && (not (ds `isSuperset` one))) inputs
+      nine = fromJust $ find (\ds -> (length ds == 6) && (ds `isStrictSuperset` four)) inputs
+      six = fromJust $ find (\ds -> (length ds == 6) && (not (ds `isStrictSuperset` one))) inputs
       zero = fromJust $ find (\ds -> (length ds == 6) && (ds /= six && ds /= nine)) inputs
-      five = fromJust $ find (\ds -> (length ds == 5) && (six `isSuperset` ds)) inputs
-      three = fromJust $ find (\ds -> (length ds == 5) && (nine `isSuperset` ds)) inputs
+      five = fromJust $ find (\ds -> (length ds == 5) && (six `isStrictSuperset` ds)) inputs
+      three = fromJust $ find (\ds -> (length ds == 5) && (ds `isStrictSuperset` seven)) inputs
       two = fromJust $ find (\ds -> (length ds == 5) && (ds /= three && ds /= five)) inputs
     in [
         (0, zero),
@@ -90,7 +92,18 @@ segmentMapFromInputs inputs =
 determineOutputs :: Example -> [Int]
 determineOutputs (Example inputs outputs) =
   let segmentMap = segmentMapFromInputs inputs
-   in map (\o -> fst (fromJust (find (\(_, ds) -> ds == o) segmentMap))) outputs
+      matchSegment output =
+        case find (\(_, ds) -> ds == output) segmentMap of
+          Nothing -> error $ "Can't find " ++ show output ++ "(map = " ++ show segmentMap ++ ")"
+          Just (n, _)  -> n
+   in map matchSegment outputs
+
+toNumber :: [Int] -> Int
+toNumber = go . reverse
+  where go [] = 0
+        go (d:ds) =
+          let prevNum = go ds
+           in prevNum * 10 + d
 
 parseExamples :: Parser [Example]
 parseExamples = do
@@ -99,10 +112,14 @@ parseExamples = do
   return examples
 
 inputPath :: String
-inputPath = "./inputs/8-demo.txt"
+inputPath = "./inputs/8.txt"
 
 problem :: Problem
 problem = do
   input <- asks envInput
-  let (Right examples) = parse parseExamples "" input
-  return $ show $ map determineOutputs examples
+  let result = parse parseExamples "" input
+  let examples = case result of
+                    (Left parseError) -> error $ show parseError
+                    (Right e) -> e
+  let outputs = map (toNumber . determineOutputs) examples
+  return $ show $ sum outputs

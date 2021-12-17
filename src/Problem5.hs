@@ -120,4 +120,3 @@ problem = do
   input <- asks envInput
   let (Right vents) = parse parseVentFile "" input
   return $ show $ length $ Set.toList $ allOverlaps vents
-  -- return $ intercalate "\n" $ transpose $ plotPoints $ countPoints $ concatMap pointsForVent vents

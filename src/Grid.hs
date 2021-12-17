@@ -1,4 +1,14 @@
-module Grid (Grid, fromLists, gridWidth, gridHeight, gridRow, gridCol) where
+module Grid
+  ( Grid,
+    fromLists,
+    isInBounds,
+    gridWidth,
+    gridHeight,
+    gridRow,
+    gridRows,
+    gridCol,
+    points
+  ) where
 
 import Data.Array ((!), Array, array, bounds)
 
@@ -18,6 +28,11 @@ fromLists rows =
 -- Accessors
 --
 
+isInBounds :: Grid a -> (Int, Int) -> Bool
+isInBounds grid (x, y) =
+  let ((minX, minY), (maxX, maxY)) = bounds grid
+   in x >= minX && x <= maxX && y >= minY && y <= maxY
+
 gridWidth :: Grid a -> Int
 gridWidth grid =
   let ((0, 0), (width, _)) = bounds grid
@@ -34,8 +49,16 @@ gridRow y grid =
       indices = [(x, y) | x <- [0..width]]
    in map (grid !) indices
 
+gridRows :: Grid a -> [[a]]
+gridRows grid = [gridRow y grid | y <- [0..(gridHeight grid)]]
+
 gridCol :: Int -> Grid a -> [a]
 gridCol x grid =
   let height = gridHeight grid
       indices = [(x, y) | y <- [0..height]]
    in map (grid !) indices
+
+points :: Grid a -> [(Int, Int)]
+points grid =
+  let ((minX, minY), (maxX, maxY)) = bounds grid
+   in [(x, y) | x <- [minX..maxX], y <- [minY..maxY]]

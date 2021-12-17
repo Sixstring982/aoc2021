@@ -29,6 +29,7 @@ library
       Environment
       Grid
       Lib
+      Point
       Problem
       Problem1
       Problem2
@@ -38,6 +39,7 @@ library
       Problem6
       Problem7
       Problem8
+      Problem9
       Range
   other-modules:
       Paths_aoc2021
