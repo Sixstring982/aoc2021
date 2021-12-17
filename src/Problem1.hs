@@ -6,6 +6,7 @@ import Environment (envIntLines)
 import Problem (Problem)
 
 countIncreases :: [Int] -> Int
+countIncreases [] = 0
 countIncreases xs@(x : _) = fst $ foldl go (0, x) xs
   where
     go (acc, prev) next =

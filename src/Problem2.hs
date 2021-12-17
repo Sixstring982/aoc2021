@@ -15,6 +15,7 @@ runCommand :: Sub -> String -> Sub
 runCommand (Sub a x y) ('f' : 'o' : 'r' : 'w' : 'a' : 'r' : 'd' : ' ' : n) = Sub a (x + read n) (y + a * read n)
 runCommand (Sub a x y) ('d' : 'o' : 'w' : 'n' : n) = Sub (a + read n) x y
 runCommand (Sub a x y) ('u' : 'p' : n) = Sub (a - read n) x y
+runCommand _ _ = undefined
 
 runSub :: [String] -> Sub
 runSub = foldl runCommand (Sub 0 0 0)
@@ -24,6 +25,6 @@ inputPath = "./inputs/2.txt"
 
 problem :: Problem
 problem = do
-  lines <- asks envLines
-  let (Sub a x y) = runSub lines
+  inputLines <- asks envLines
+  let (Sub _ x y) = runSub inputLines
   return $ show $ x * y

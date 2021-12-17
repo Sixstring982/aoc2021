@@ -2,7 +2,6 @@ module Problem3 (problem, inputPath) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.Bits ((.&.), bit)
-import Data.List (transpose)
 import Environment (envLines)
 import Problem (Problem)
 
@@ -38,9 +37,9 @@ inputPath = "./inputs/3.txt"
 
 problem :: Problem
 problem = do
-  lines <- asks envLines
-  let bitCount = length $ head lines
-  let nums = map fromBits lines
+  inputLines <- asks envLines
+  let bitCount = length $ head inputLines
+  let nums = map fromBits inputLines
   let oxygen = narrowBits bitCount nums fst
   let co2 = narrowBits bitCount nums snd
   return $ show $ oxygen * co2
