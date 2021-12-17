@@ -14,6 +14,4 @@ problem = do
   input <- asks envInput
   let Right (draws, boards) = parse parseBingo "" input
   let Just (finalDraw, finalBoard) = lastBoardToWin draws boards
-  -- let Just (n, winner) = winningBoard boards draws
-  -- let (Just (_, score)) = runAndScore first draws
   return $ show $ scoreBoard finalDraw finalBoard
