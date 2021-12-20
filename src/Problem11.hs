@@ -24,27 +24,50 @@ instance Show Octopi where
 increaseEnergy :: Octopi -> Octopi
 increaseEnergy (Octopi grid) = Octopi $ fmap succ grid
 
+flashPoint :: Octopi -> Point -> Octopi
+flashPoint (Octopi grid) flasher =
+  let neighbors = gridMoores grid flasher
+      mapper point value
+        | value == 0 = 0
+        | point == flasher = 0
+        | point `elem` neighbors = succ value
+        | otherwise = value
+   in Octopi $ mapWithIndex mapper grid
+
 flash :: [Point] -> Octopi -> Octopi
-flash flashers (Octopi grid) = Octopi $ mapWithIndex mapper grid
-  where mapper p value =
-          let moores = gridMoores grid p
-              flashes = length [m | m <- moores, m `elem` flashers]
-           in value + flashes
+flash flashPoints octopi = foldl flashPoint octopi flashPoints
 
 doFlashes :: Octopi -> Octopi
 doFlashes octopi@(Octopi grid) =
-  let flashers = findPointsWhere (> 9) grid
-   in if length flashers == 0 then octopi
-      else doFlashes $ flash flashers octopi
+  let flashPoints = findPointsWhere (> 9) grid
+   in if length flashPoints == 0
+      then octopi
+      else doFlashes $ flash flashPoints octopi
 
 advanceOctopi :: Octopi -> Octopi
 advanceOctopi = doFlashes . increaseEnergy
 
+countFlashes :: Int -> Octopi -> Int
+countFlashes = go 0
+  where
+    go flashCount 0         _ = flashCount
+    go flashCount stepsLeft octopi =
+          let next@(Octopi grid) = advanceOctopi octopi
+              flashes = length $ findPointsWhere (== 0) grid
+           in go (flashCount + flashes) (pred stepsLeft) next
+
+allFlashStep :: Octopi -> Int
+allFlashStep = go 0
+  where
+    go step octopi@(Octopi grid)
+      | all (== 0) $ concat $ Grid.toLists grid = step
+      | otherwise = go (succ step) (advanceOctopi octopi)
+
 inputPath :: String
-inputPath = "./inputs/11-demo.txt"
+inputPath = "./inputs/11.txt"
 
 problem :: Problem
 problem = do
   input <- asks envIntGrid
   let octopi = Octopi input
-  return $ show $ (!! 2) $ iterate advanceOctopi octopi
+  return $ show $ allFlashStep octopi
