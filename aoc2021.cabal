@@ -27,6 +27,7 @@ library
   exposed-modules:
       Bingo
       Environment
+      Graph
       Grid
       Lib
       Point
@@ -34,6 +35,7 @@ library
       Problem1
       Problem10
       Problem11
+      Problem12
       Problem2
       Problem3
       Problem4
@@ -53,6 +55,7 @@ library
       array
     , base >=4.7 && <5
     , containers
+    , multimap
     , parsec
     , split
     , tasty
@@ -75,6 +78,7 @@ executable aoc2021-exe
     , array
     , base >=4.7 && <5
     , containers
+    , multimap
     , parsec
     , split
     , tasty
@@ -99,6 +103,7 @@ test-suite aoc2021-test
     , array
     , base >=4.7 && <5
     , containers
+    , multimap
     , parsec
     , split
     , tasty
