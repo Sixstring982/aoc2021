@@ -5,7 +5,7 @@ where
 
 import Control.Monad.Trans.Reader (runReader)
 import Environment (Env (..))
-import Problem9 (problem, inputPath)
+import Problem11 (problem, inputPath)
 
 someFunc :: IO ()
 someFunc = do

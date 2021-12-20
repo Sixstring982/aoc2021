@@ -1,11 +1,13 @@
 module Problem9 (problem, inputPath) where
 
-import Data.Array ((!))
-import Point (mooreNeighbors)
 import Control.Monad.Trans.Reader (asks)
-import Data.List (intercalate)
-import qualified Grid as Grid
+import Data.Array ((!))
+import Data.List (intercalate, sort)
+import qualified Data.Set as Set
 import Environment (envInput)
+import qualified Grid as Grid
+import Point (Point)
+import Point (mooreNeighbors)
 import Problem (Problem)
 import Text.Parsec
 
@@ -30,7 +32,7 @@ parseHeightmapRow :: Parser [Int]
 parseHeightmapRow = do
   digits <- many digit
   _ <- endOfLine
-  return $ map (read . (:[])) digits
+  return $ map (read . (: [])) digits
 
 parseHeightmap :: Parser Heightmap
 parseHeightmap = do
@@ -42,22 +44,47 @@ parseHeightmap = do
 -- Accessors
 --
 
-neighbors :: Heightmap -> (Int, Int) -> [(Int, Int)]
-neighbors hm@(Heightmap grid) p =
+neighbors :: Heightmap -> Point -> [Point]
+neighbors (Heightmap grid) p =
   let moores = mooreNeighbors p
    in filter (Grid.isInBounds grid) moores
 
-isLowPoint :: Heightmap -> (Int, Int) -> Bool
+isLowPoint :: Heightmap -> Point -> Bool
 isLowPoint hm@(Heightmap grid) p =
   let ns = neighbors hm p
       neighborValues = map (grid !) ns
       currentValue = grid ! p
    in all (> currentValue) neighborValues
 
-lowPoints :: Heightmap -> [(Int, Int)]
+lowPoints :: Heightmap -> [Point]
 lowPoints hm@(Heightmap grid) =
   let points = Grid.points grid
    in filter (isLowPoint hm) points
+
+--
+-- Finding basins
+--
+
+type Basin = Set.Set Point
+
+findBasin :: Heightmap -> Point -> Basin
+findBasin hm@(Heightmap grid) lowPoint =
+  dfs lowPoint Set.empty [lowPoint]
+  where
+    dfs _ visited [] = visited
+    dfs p visited q =
+      let allNeighbors =
+            [ n
+              | n <- neighbors hm p,
+                (grid ! n) /= 9,
+                not (n `elem` visited)
+            ]
+        in dfs (head q) (Set.insert p visited) (allNeighbors ++ (tail q))
+
+findBasins :: Heightmap -> Set.Set Basin
+findBasins hm =
+  let lows = lowPoints hm
+   in Set.fromList $ map (findBasin hm) lows
 
 inputPath :: String
 inputPath = "./inputs/9.txt"
@@ -65,5 +92,5 @@ inputPath = "./inputs/9.txt"
 problem :: Problem
 problem = do
   input <- asks envInput
-  let (Right hm@(Heightmap grid)) = parse parseHeightmap "" input
-  return $ show $ sum $ map (succ . (grid !)) $ lowPoints hm
+  let (Right hm) = parse parseHeightmap "" input
+  return $ show $ product $ take 3 $ reverse $ sort $ map (length . findBasin hm) $ lowPoints hm
