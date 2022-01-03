@@ -1,4 +1,4 @@
-module Problem6 (problem, inputPath) where
+module Problem6 (problem) where
 
 import qualified Data.Map as Map
 import Data.Map ((!?))
@@ -25,9 +25,6 @@ advanceDayForAllFish fish =
       newFishMap = Map.fromList [(8, newFishCount)]
       oldFishMap = Map.mapKeysWith (+) advanceDayForFish fish
    in Map.unionWith (+) oldFishMap newFishMap
-
-inputPath :: String
-inputPath = "./inputs/6.txt"
 
 problem :: Problem
 problem = do

@@ -1,4 +1,4 @@
-module Problem1 (problem, inputPath) where
+module Problem1 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.List (tails)
@@ -16,9 +16,6 @@ countIncreases xs@(x : _) = fst $ foldl go (0, x) xs
 
 sumWindows :: Int -> [Int] -> [Int]
 sumWindows size = map sum . map (take size) . filter (\x -> length x >= size) . tails
-
-inputPath :: String
-inputPath = "./inputs/1.txt"
 
 problem :: Problem
 problem = do

@@ -1,4 +1,4 @@
-module Problem3 (problem, inputPath) where
+module Problem3 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.Bits ((.&.), bit)
@@ -31,9 +31,6 @@ narrowBits :: Int -> [Int] -> ((Int, Int) -> Int) -> Int
 narrowBits numBits nums g = go (pred numBits) nums
   where go _ (n:[]) = n
         go n ns = go (pred n) (narrowStep n ns g)
-
-inputPath :: String
-inputPath = "./inputs/3.txt"
 
 problem :: Problem
 problem = do

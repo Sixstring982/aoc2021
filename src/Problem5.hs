@@ -1,4 +1,4 @@
-module Problem5 (problem, inputPath) where
+module Problem5 (problem) where
 
 import Range (range)
 import Control.Monad.Trans.Reader (asks)
@@ -111,9 +111,6 @@ parseVentFile = do
 ----------
 -- Problem
 ----------
-
-inputPath :: String
-inputPath = "./inputs/5.txt"
 
 problem :: Problem
 problem = do

@@ -23,8 +23,10 @@ dependencies:
 - array
 - base >= 4.7 && < 5
 - containers
+- mtl
 - multimap
 - parsec
+- pqueue
 - split
 - transformers
 - tasty
@@ -32,6 +34,7 @@ dependencies:
 - tasty-quickcheck
 
 default-extensions:
+- NumericUnderscores
 - ScopedTypeVariables
 
 library:

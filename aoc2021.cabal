@@ -26,16 +26,25 @@ source-repository head
 library
   exposed-modules:
       Bingo
+      BitsPacket
+      Emitter
       Environment
+      Frequency
       Graph
       Grid
+      Hex
       Lib
       Point
+      PointSet
       Problem
       Problem1
       Problem10
       Problem11
       Problem12
+      Problem13
+      Problem14
+      Problem15
+      Problem16
       Problem2
       Problem3
       Problem4
@@ -50,13 +59,16 @@ library
   hs-source-dirs:
       src
   default-extensions:
+      NumericUnderscores
       ScopedTypeVariables
   build-depends:
       array
     , base >=4.7 && <5
     , containers
+    , mtl
     , multimap
     , parsec
+    , pqueue
     , split
     , tasty
     , tasty-hunit
@@ -71,6 +83,7 @@ executable aoc2021-exe
   hs-source-dirs:
       app
   default-extensions:
+      NumericUnderscores
       ScopedTypeVariables
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
@@ -78,8 +91,10 @@ executable aoc2021-exe
     , array
     , base >=4.7 && <5
     , containers
+    , mtl
     , multimap
     , parsec
+    , pqueue
     , split
     , tasty
     , tasty-hunit
@@ -91,11 +106,13 @@ test-suite aoc2021-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      GridSpec
+      BitsPacketSpec
+      HexSpec
       Paths_aoc2021
   hs-source-dirs:
       test
   default-extensions:
+      NumericUnderscores
       ScopedTypeVariables
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
@@ -103,8 +120,10 @@ test-suite aoc2021-test
     , array
     , base >=4.7 && <5
     , containers
+    , mtl
     , multimap
     , parsec
+    , pqueue
     , split
     , tasty
     , tasty-hunit

@@ -1,9 +1,8 @@
-{-# LANGUAGE ScopedTypeVariables#-}
-
 module Bingo (Draws, Space(..), Board(..), parseBingo, runGame, lastBoardToWin, scoreBoard) where
 
 import Data.List.Split (chunksOf)
 import Data.List (find, intercalate, partition)
+import Data.Maybe (catMaybes)
 import Data.Array (elems)
 import Text.Parsec (
   many, digit, Parsec, char, sepBy, endOfLine, try, string, count, manyTill, eof, (<|>))
@@ -29,7 +28,7 @@ newtype Board = Board (Grid Space)
 
 instance Show Board where
   show (Board g) =
-    let rows :: [[Space]] = chunksOf 5 $ elems g
+    let rows :: [[Space]] = chunksOf 5 $ concat $ Grid.toLists (Unmarked (-1)) g
         shownRows :: [[String]] = map (map show) rows
      in intercalate "\n" $ (map (intercalate " ")) shownRows
 
@@ -75,10 +74,10 @@ isMarked (Marked _) = True
 isMarked (Unmarked _) = False
 
 boardRow :: Int -> Board -> [Space]
-boardRow y (Board g) = gridRow y g
+boardRow y (Board g) = catMaybes $ gridRow y g
 
 boardCol :: Int -> Board -> [Space]
-boardCol x (Board g) = gridCol x g
+boardCol x (Board g) = catMaybes $ gridCol x g
 
 boardRows :: Board -> [[Space]]
 boardRows board = [boardRow y board | y <- [0..4]]
@@ -95,7 +94,7 @@ isBingo board =
 
 scoreBoard :: Int -> Board -> Int
 scoreBoard lastDraw (Board g) =
-  let unmarked = map spaceValue $ filter (not . isMarked) $ elems g
+  let unmarked = map spaceValue $ filter (not . isMarked) $ Grid.values g
    in lastDraw * (sum unmarked)
 
 --

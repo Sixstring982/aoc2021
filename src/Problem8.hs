@@ -1,4 +1,4 @@
-module Problem8 (problem, inputPath) where
+module Problem8 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.List (find)
@@ -110,9 +110,6 @@ parseExamples = do
   examples <- many parseExample
   _ <- eof
   return examples
-
-inputPath :: String
-inputPath = "./inputs/8.txt"
 
 problem :: Problem
 problem = do

@@ -1,13 +1,10 @@
-module Problem4 (problem, inputPath) where
+module Problem4 (problem) where
 
 import Bingo (parseBingo, lastBoardToWin, scoreBoard)
 import Control.Monad.Trans.Reader (asks)
 import Environment (Env (envInput))
 import Problem (Problem)
 import Text.Parsec (parse)
-
-inputPath :: String
-inputPath = "./inputs/4.txt"
 
 problem :: Problem
 problem = do

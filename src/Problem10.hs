@@ -1,4 +1,4 @@
-module Problem10 (problem, inputPath) where
+module Problem10 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.Maybe (catMaybes)
@@ -93,9 +93,6 @@ classifyLine line = go (tail line) [head line] []
 
 middle :: [a] -> a
 middle xs = xs !! (length xs `div` 2)
-
-inputPath :: String
-inputPath = "./inputs/10.txt"
 
 problem :: Problem
 problem = do

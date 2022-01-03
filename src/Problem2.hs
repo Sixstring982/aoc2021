@@ -1,4 +1,4 @@
-module Problem2 (problem, inputPath) where
+module Problem2 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Environment (envLines)
@@ -19,9 +19,6 @@ runCommand _ _ = undefined
 
 runSub :: [String] -> Sub
 runSub = foldl runCommand (Sub 0 0 0)
-
-inputPath :: String
-inputPath = "./inputs/2.txt"
 
 problem :: Problem
 problem = do

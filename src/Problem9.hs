@@ -1,4 +1,4 @@
-module Problem9 (problem, inputPath) where
+module Problem9 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.Array ((!))
@@ -52,8 +52,8 @@ neighbors (Heightmap grid) p =
 isLowPoint :: Heightmap -> Point -> Bool
 isLowPoint hm@(Heightmap grid) p =
   let ns = neighbors hm p
-      neighborValues = map (grid !) ns
-      currentValue = grid ! p
+      neighborValues = map (grid Grid.!?) ns
+      currentValue = grid Grid.!? p
    in all (> currentValue) neighborValues
 
 lowPoints :: Heightmap -> [Point]
@@ -76,7 +76,7 @@ findBasin hm@(Heightmap grid) lowPoint =
       let allNeighbors =
             [ n
               | n <- neighbors hm p,
-                (grid ! n) /= 9,
+                (grid Grid.!? n) /= Just 9,
                 not (n `elem` visited)
             ]
         in dfs (head q) (Set.insert p visited) (allNeighbors ++ (tail q))
@@ -85,9 +85,6 @@ findBasins :: Heightmap -> Set.Set Basin
 findBasins hm =
   let lows = lowPoints hm
    in Set.fromList $ map (findBasin hm) lows
-
-inputPath :: String
-inputPath = "./inputs/9.txt"
 
 problem :: Problem
 problem = do

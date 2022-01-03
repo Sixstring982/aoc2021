@@ -5,10 +5,12 @@ where
 
 import Control.Monad.Trans.Reader (runReader)
 import Environment (Env (..))
-import Problem12 (problem, inputPath)
+import Problem16 (problem)
+import System.Environment (getArgs)
 
 someFunc :: IO ()
 someFunc = do
-  input <- readFile inputPath
+  args <- getArgs
+  input <- readFile (head args)
   let env = Env {envInput = input}
   putStrLn $ runReader problem env

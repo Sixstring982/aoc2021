@@ -1,4 +1,4 @@
-module Problem7 (problem, inputPath) where
+module Problem7 (problem) where
 
 import Control.Monad.Trans.Reader (asks)
 import Data.List (minimumBy)
@@ -28,9 +28,6 @@ minFuelForCrabs crabs =
       positions = [minCrab..maxCrab]
       minPosition = minimumBy (comparing (\p -> fuelForCrabs p crabs)) positions
    in (minPosition, fuelForCrabs minPosition crabs)
-
-inputPath :: String
-inputPath = "./inputs/7.txt"
 
 problem :: Problem
 problem = do
